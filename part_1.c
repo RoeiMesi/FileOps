@@ -1,4 +1,4 @@
-// Name: Roei Mesilaty - ID: 315253336 - Exercise number: 2
+// Name: Roei Mesilaty - ID: 315253336
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

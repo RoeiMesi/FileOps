@@ -1,14 +1,12 @@
+// Name: Roei Mesilaty, ID: 315253336
 #include "buffered_open.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdarg.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <assert.h>
-#include <math.h>
 #define CHUNK_SIZE 1024
 
 #define TEST_FILE "test_file.txt"
