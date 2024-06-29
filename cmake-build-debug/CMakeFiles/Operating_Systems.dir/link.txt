@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/Operating_Systems.dir/part_3.c.o -o Operating_Systems 
