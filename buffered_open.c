@@ -16,7 +16,6 @@ size_t min(size_t a, size_t b) {
     return b;
 }
 
-
 buffered_file_t *buffered_open(const char *pathname, int flags, ...) {
     buffered_file_t *bf = (buffered_file_t *)malloc(sizeof(buffered_file_t));
     if (!bf) {
@@ -71,6 +70,9 @@ buffered_file_t *buffered_open(const char *pathname, int flags, ...) {
 }
 
 ssize_t buffered_write(buffered_file_t *bf, const void *buf, size_t count) {
+    if (bf->flags == O_RDONLY) {
+        return -1;
+    }
     size_t bytes_to_write = count;
     size_t buffer_space = bf->write_buffer_size - bf->write_buffer_pos;
 

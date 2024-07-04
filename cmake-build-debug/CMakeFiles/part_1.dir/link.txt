@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/part_1.dir/part_1.c.o CMakeFiles/part_1.dir/part_3.c.o -o part_1 
