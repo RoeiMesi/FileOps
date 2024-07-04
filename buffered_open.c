@@ -64,8 +64,6 @@ buffered_file_t *buffered_open(const char *pathname, int flags, ...) {
         free(bf);
         return NULL;
     }
-
-    printf("File opened successfully: fd = %d\n", bf->fd);
     return bf;
 }
 
