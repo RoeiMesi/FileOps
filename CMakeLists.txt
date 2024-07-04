@@ -4,5 +4,4 @@ project(ex_2 C)
 set(CMAKE_C_STANDARD 11)
 
 # Define executable for part_3
-add_executable(part_4 part_4.c
-        copytree.c)
+add_executable(buffered_open buffered_open.c)

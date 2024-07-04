@@ -117,65 +117,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named part_4
+# Target rules for targets named buffered_open
 
 # Build rule for target.
-part_4: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 part_4
-.PHONY : part_4
+buffered_open: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 buffered_open
+.PHONY : buffered_open
 
 # fast build rule for target.
-part_4/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/part_4.dir/build.make CMakeFiles/part_4.dir/build
-.PHONY : part_4/fast
+buffered_open/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/buffered_open.dir/build.make CMakeFiles/buffered_open.dir/build
+.PHONY : buffered_open/fast
 
-copytree.o: copytree.c.o
-.PHONY : copytree.o
-
-# target to build an object file
-copytree.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/part_4.dir/build.make CMakeFiles/part_4.dir/copytree.c.o
-.PHONY : copytree.c.o
-
-copytree.i: copytree.c.i
-.PHONY : copytree.i
-
-# target to preprocess a source file
-copytree.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/part_4.dir/build.make CMakeFiles/part_4.dir/copytree.c.i
-.PHONY : copytree.c.i
-
-copytree.s: copytree.c.s
-.PHONY : copytree.s
-
-# target to generate assembly for a file
-copytree.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/part_4.dir/build.make CMakeFiles/part_4.dir/copytree.c.s
-.PHONY : copytree.c.s
-
-part_4.o: part_4.c.o
-.PHONY : part_4.o
+buffered_open.o: buffered_open.c.o
+.PHONY : buffered_open.o
 
 # target to build an object file
-part_4.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/part_4.dir/build.make CMakeFiles/part_4.dir/part_4.c.o
-.PHONY : part_4.c.o
+buffered_open.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/buffered_open.dir/build.make CMakeFiles/buffered_open.dir/buffered_open.c.o
+.PHONY : buffered_open.c.o
 
-part_4.i: part_4.c.i
-.PHONY : part_4.i
+buffered_open.i: buffered_open.c.i
+.PHONY : buffered_open.i
 
 # target to preprocess a source file
-part_4.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/part_4.dir/build.make CMakeFiles/part_4.dir/part_4.c.i
-.PHONY : part_4.c.i
+buffered_open.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/buffered_open.dir/build.make CMakeFiles/buffered_open.dir/buffered_open.c.i
+.PHONY : buffered_open.c.i
 
-part_4.s: part_4.c.s
-.PHONY : part_4.s
+buffered_open.s: buffered_open.c.s
+.PHONY : buffered_open.s
 
 # target to generate assembly for a file
-part_4.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/part_4.dir/build.make CMakeFiles/part_4.dir/part_4.c.s
-.PHONY : part_4.c.s
+buffered_open.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/buffered_open.dir/build.make CMakeFiles/buffered_open.dir/buffered_open.c.s
+.PHONY : buffered_open.c.s
 
 # Help Target
 help:
@@ -185,13 +161,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... part_4"
-	@echo "... copytree.o"
-	@echo "... copytree.i"
-	@echo "... copytree.s"
-	@echo "... part_4.o"
-	@echo "... part_4.i"
-	@echo "... part_4.s"
+	@echo "... buffered_open"
+	@echo "... buffered_open.o"
+	@echo "... buffered_open.i"
+	@echo "... buffered_open.s"
 .PHONY : help
 
 

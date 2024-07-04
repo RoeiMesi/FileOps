@@ -34,7 +34,7 @@ void freeLock(const char* lockfile) {
 }
 
 void main(int argc, char* argv[]) {
-    if (argc < 6) {
+    if (argc < 5) {
         fprintf(stderr, "Usage: %s <message1> <message2> ... <order> <count>", argv[0]);
         return;
     }

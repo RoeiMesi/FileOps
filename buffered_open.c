@@ -1,161 +1,243 @@
+// Name: Roei Mesilaty, ID: 315253336
 #include "buffered_open.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <stdarg.h>
-#include <errno.h>
+#include <fcntl.h>
+
+#define BUFFER_SIZE 4096
 
 // Helper function to allocate and initialize a buffered_file_t structure
-static buffered_file_t* init_buffered_file(int fd, int flags) {
-    buffered_file_t *bf = (buffered_file_t *)malloc(sizeof(buffered_file_t));
-    if (!bf) return NULL;
+size_t min(size_t a, size_t b) {
+    if (a < b)
+        return a;
+    return b;
+}
 
-    bf->fd = fd;
+
+buffered_file_t *buffered_open(const char *pathname, int flags, ...) {
+    buffered_file_t *bf = (buffered_file_t *)malloc(sizeof(buffered_file_t));
+    if (!bf) {
+        perror("Failed to allocate memory for buffered_file_t");
+        return NULL;
+    }
+
     bf->read_buffer = (char *)malloc(BUFFER_SIZE);
     bf->write_buffer = (char *)malloc(BUFFER_SIZE);
     if (!bf->read_buffer || !bf->write_buffer) {
+        perror("Failed to allocate buffers");
         free(bf->read_buffer);
         free(bf->write_buffer);
         free(bf);
         return NULL;
     }
 
-    bf->read_buffer_size = BUFFER_SIZE;
+    bf->read_buffer_size = 0;
     bf->write_buffer_size = BUFFER_SIZE;
     bf->read_buffer_pos = 0;
     bf->write_buffer_pos = 0;
+    if (flags & O_PREAPPEND) {
+        bf->preappend = 1;
+        // flags = O_RDWR;  // open file with O_RDWR and force manually flags.
+    } else
+        bf->preappend = 0;
     bf->flags = flags;
-    bf->preappend = (flags & O_PREAPPEND) ? 1 : 0;
 
-    return bf;
-}
+    // Remove O_PREAPPEND before calling the original open function
+    flags &= ~O_PREAPPEND;
 
-buffered_file_t* buffered_open(const char *pathname, int flags, ...) {
-    int fd;
     va_list args;
     va_start(args, flags);
-
-    // Remove the O_PREAPPEND flag for the actual open call
-    int open_flags = flags & ~O_PREAPPEND;
     if (flags & O_CREAT) {
-        mode_t mode = va_arg(args, mode_t);
-        fd = open(pathname, open_flags, mode);
+        mode_t mode = va_arg(args, int);
+        bf->fd = open(pathname, flags, mode);
     } else {
-        fd = open(pathname, open_flags);
+        bf->fd = open(pathname, flags);
     }
     va_end(args);
 
-    if (fd == -1) return NULL;
+    if (bf->fd == -1) {
+        perror("Failed to open file");
+        free(bf->read_buffer);
+        free(bf->write_buffer);
+        free(bf);
+        return NULL;
+    }
 
-    return init_buffered_file(fd, flags);
+    printf("File opened successfully: fd = %d\n", bf->fd);
+    return bf;
 }
 
 ssize_t buffered_write(buffered_file_t *bf, const void *buf, size_t count) {
-    // Handle O_PREAPPEND logic
-    if (bf->preappend) {
-        // Read the existing file content from the current position to the end
-        off_t current_pos = lseek(bf->fd, 0, SEEK_CUR);
-        off_t end_pos = lseek(bf->fd, 0, SEEK_END);
-        size_t remaining_size = end_pos - current_pos;
+    size_t bytes_to_write = count;
+    size_t buffer_space = bf->write_buffer_size - bf->write_buffer_pos;
 
-        // Allocate a temporary buffer to hold the remaining content
-        char *temp_buffer = (char *)malloc(remaining_size);
-        if (!temp_buffer) return -1;
+    while (bytes_to_write > buffer_space) {
+        // Copy data to buffer
+        memcpy(bf->write_buffer + bf->write_buffer_pos, buf, buffer_space);
+        bf->write_buffer_pos = bf->write_buffer_size;
 
-        // Read the remaining content into the temporary buffer
-        lseek(bf->fd, current_pos, SEEK_SET);
-        read(bf->fd, temp_buffer, remaining_size);
-
-        // Write the new data at the current position
-        lseek(bf->fd, current_pos, SEEK_SET);
-        write(bf->fd, buf, count);
-
-        // Append the remaining content after the new data
-        write(bf->fd, temp_buffer, remaining_size);
-        lseek(bf->fd,0,SEEK_SET);
-        // Clean up and reset the flag
-        free(temp_buffer);
-
-        return count;
-    }
-
-    // // If the last operation was reading, adjust the file descriptor position
-    // if (bf->read_buffer_pos > 0) {
-    //     off_t read_offset = bf->read_buffer_pos - bf->read_buffer_size;
-    //     if (lseek(bf->fd, read_offset, SEEK_CUR) == -1) {
-    //         return -1;
-    //     }
-    //     bf->read_buffer_pos = 0;
-    // }
-
-    // Write to the write buffer
-    size_t total_written = 0;
-    while (count > 0) {
-        size_t space_left = bf->write_buffer_size - bf->write_buffer_pos;
-        size_t to_write = count < space_left ? count : space_left;
-
-        memcpy(bf->write_buffer + bf->write_buffer_pos, buf, to_write);
-        bf->write_buffer_pos += to_write;
-        buf = (const char *)buf + to_write;
-        count -= to_write;
-        total_written += to_write;
-
-        if (bf->write_buffer_pos == bf->write_buffer_size) {
-            if (buffered_flush(bf) == -1) return -1;
+        // Flush the buffer (flushing the buffer makes bf->write_buffer_pos = 0)
+        if (buffered_flush(bf) == -1) {
+            return -1;
         }
+
+        // now the buffer is empty
+        buffer_space = bf->write_buffer_size;
+
+        // update buf to point to the next section to write.
+        buf += buffer_space;
+        bytes_to_write -= buffer_space;
     }
-    return total_written;
+
+    // Copy the remaining data to buffer
+    memcpy(bf->write_buffer + bf->write_buffer_pos, buf, bytes_to_write);
+    bf->write_buffer_pos += bytes_to_write;
+    return (ssize_t) count;
 }
 
+
 ssize_t buffered_read(buffered_file_t *bf, void *buf, size_t count) {
-    // Flush the write buffer before reading
-    if (buffered_flush(bf) == -1) return -1;
+    if (bf->flags & O_WRONLY){
+        return -1;
+    }
+    size_t bytes_to_read = count;   // maximum bytes to read
+    size_t buffer_space = bf->read_buffer_size - bf->read_buffer_pos;
 
-    size_t total_read = 0;
-    while (count > 0) {
-        if (bf->read_buffer_pos == 0) {
-            ssize_t bytes_read = read(bf->fd, bf->read_buffer, BUFFER_SIZE);
-            if (bytes_read <= 0) return total_read ? total_read : bytes_read;
-            bf->read_buffer_size = bytes_read;
+    while (buffer_space < bytes_to_read) {
+        // Copy data from buffer
+        memcpy(buf, bf->read_buffer + bf->read_buffer_pos, buffer_space);
+        bytes_to_read -= buffer_space;
+        buf += buffer_space;
+
+        // Load read_buffer with new data
+        bf->read_buffer_pos = 0;
+        bf->read_buffer_size = read(bf->fd, bf->read_buffer, BUFFER_SIZE);
+        if (bf->read_buffer_size == -1)
+            perror("Failed to read from file");
+        buffer_space = bf->read_buffer_size;
+
+        // No more to read from the file
+        if (bf->read_buffer_size < BUFFER_SIZE) {
+            break;
         }
-
-        size_t to_read = bf->read_buffer_size - bf->read_buffer_pos;
-        if (to_read > count) to_read = count;
-
-        memcpy(buf, bf->read_buffer + bf->read_buffer_pos, to_read);
-        bf->read_buffer_pos += to_read;
-        buf = (char *)buf + to_read;
-        count -= to_read;
-        total_read += to_read;
-
-        if (bf->read_buffer_pos == bf->read_buffer_size) bf->read_buffer_pos = 0;
     }
 
-    // Adjust the file descriptor to point after the actual bytes read
-    off_t current_pos = lseek(bf->fd, total_read, SEEK_CUR);
-    if (current_pos == -1) {
-        perror("lseek");
+    size_t remain_bytes_to_read = min(buffer_space, bytes_to_read);
+    memcpy(buf, bf->read_buffer + bf->read_buffer_pos, remain_bytes_to_read);
+    bf->read_buffer_pos += remain_bytes_to_read;
+    return (ssize_t) count - bytes_to_read + remain_bytes_to_read; // bytes_read
+}
+
+int flush_pre_append(buffered_file_t *bf) {
+    if (bf->write_buffer_pos == 0)
+        return 0;
+
+    // Get the number of bytes to flush.
+    size_t buf_size = bf->write_buffer_pos;
+
+    // Save current position
+    off_t current_pos = lseek(bf->fd, 0, SEEK_CUR);
+
+    // Create temp txt file
+    int temp_fd = open("temp_file.txt", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    if (temp_fd == -1) {
+        perror("Failed to open temporary file");
         return -1;
     }
 
-    return total_read;
+    // Flush the buffer to that file
+    ssize_t written_bytes = write(temp_fd, bf->write_buffer, buf_size);
+    if (written_bytes == -1) {
+        perror("Failed to write buffer content to temporary file");
+        close(temp_fd);
+        return -1;
+    }
+
+    // Reset buffer position
+    bf->write_buffer_pos = 0;
+
+    // Copy from bf->fd to temp_fd
+    char buffer[BUFFER_SIZE];
+    ssize_t read_bytes;
+    while ((read_bytes = read(bf->fd, buffer, BUFFER_SIZE)) > 0) {
+        written_bytes = write(temp_fd, buffer, read_bytes);
+        if (written_bytes == -1) {
+            perror("Failed to write existing data to temporary file");
+            close(temp_fd);
+            return -1;
+        }
+    }
+
+    if (read_bytes == -1) {
+        perror("Failed to read existing data from original file");
+        close(temp_fd);
+        return -1;
+    }
+
+    // Go back to current_pos
+    lseek(bf->fd, current_pos, SEEK_SET);
+
+    // Copy from temp_fd to bf->fd
+    lseek(temp_fd, 0, SEEK_SET); // Move to the start of the temp file
+    while ((read_bytes = read(temp_fd, buffer, BUFFER_SIZE)) > 0) {
+        written_bytes = write(bf->fd, buffer, read_bytes);
+        if (written_bytes == -1) {
+            perror("Failed to write back to the original file");
+            close(temp_fd);
+            return -1;
+        }
+    }
+
+    if (read_bytes == -1) {
+        perror("Failed to read from temporary file");
+        close(temp_fd);
+        return -1;
+    }
+
+    // Close and delete temp_fd
+    close(temp_fd);
+    remove("temp_file.txt");
+
+    // Get to the current position
+    lseek(bf->fd, current_pos + buf_size, SEEK_SET);
+
+    return 0;
 }
 
 
 int buffered_flush(buffered_file_t *bf) {
-    if (bf->write_buffer_pos > 0) {
-        ssize_t written = write(bf->fd, bf->write_buffer, bf->write_buffer_pos);
-        if (written == -1) return -1;
-        bf->write_buffer_pos = 0;
+    if (bf->preappend) {
+        return flush_pre_append(bf);
+    }
+
+    if (bf->write_buffer_pos != 0){
+        ssize_t written_bytes = write(bf->fd, bf->write_buffer, bf->write_buffer_pos);
+        if (written_bytes == -1) {
+            perror("Failed to write to file");
+            return -1;
+        }
+        bf->write_buffer_pos = 0; // Reset the buffer position
     }
     return 0;
 }
 
+
 int buffered_close(buffered_file_t *bf) {
-    if (buffered_flush(bf) == -1) return -1;
-    int result = close(bf->fd);
+    if (buffered_flush(bf) == -1) {
+        perror("Failed to flush before closing");
+        return -1;
+    }
+
+    if (close(bf->fd) == -1) {
+        perror("Failed to close file");
+        return -1;
+    }
 
     free(bf->read_buffer);
     free(bf->write_buffer);
     free(bf);
-    return result;
+    return 0;
 }
