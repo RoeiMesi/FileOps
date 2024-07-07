@@ -39,7 +39,6 @@ buffered_file_t *buffered_open(const char *pathname, int flags, ...) {
     bf->write_buffer_pos = 0;
     if (flags & O_PREAPPEND) {
         bf->preappend = 1;
-        // flags = O_RDWR;  // open file with O_RDWR and force manually flags.
     } else
         bf->preappend = 0;
     bf->flags = flags;
@@ -84,10 +83,10 @@ ssize_t buffered_write(buffered_file_t *bf, const void *buf, size_t count) {
             return -1;
         }
 
-        // now the buffer is empty
+        // Now the buffer is empty
         buffer_space = bf->write_buffer_size;
 
-        // update buf to point to the next section to write.
+        // Update buf to point to the next section to write.
         buf += buffer_space;
         bytes_to_write -= buffer_space;
     }
@@ -203,7 +202,6 @@ int flush_pre_append(buffered_file_t *bf) {
 
     // Get to the current position
     lseek(bf->fd, current_pos + buf_size, SEEK_SET);
-
     return 0;
 }
 

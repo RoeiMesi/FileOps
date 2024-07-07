@@ -1,3 +1,4 @@
+// Name: Roei Mesilaty, ID: 315253336
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,8 +61,7 @@ int main(int argc, char* argv[]) {
         exit(0);
     }
 
-    // Parent process
-    // Wait for both children to finish
+    // Parent process, wait for both children to finish
     wait(NULL);
     wait(NULL);
 

@@ -1,10 +1,8 @@
+// Name: Roei Mesilaty, ID: 315253336
 #include "copytree.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <fcntl.h>
