@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "buffered_open"
+			"path" : "part4"
 		}
 	],
 	"backtrace" : 1,
@@ -52,11 +52,12 @@
 			},
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1
 			]
 		}
 	],
-	"id" : "buffered_open::@6890427a1f51a3e7e1df",
+	"id" : "part4::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -72,8 +73,8 @@
 		],
 		"language" : "C"
 	},
-	"name" : "buffered_open",
-	"nameOnDisk" : "buffered_open",
+	"name" : "part4",
+	"nameOnDisk" : "part4",
 	"paths" : 
 	{
 		"build" : ".",
@@ -85,7 +86,8 @@
 			"name" : "Source Files",
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1
 			]
 		}
 	],
@@ -94,7 +96,13 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "buffered_open.c",
+			"path" : "copytree.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "part4.c",
 			"sourceGroupIndex" : 0
 		}
 	],

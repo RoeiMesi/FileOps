@@ -1,1 +1,1 @@
-/usr/bin/cc -g CMakeFiles/buffered_open.dir/buffered_open.c.o -o buffered_open 
+/usr/bin/cc -g CMakeFiles/buffered_open.dir/buffered_open.c.o CMakeFiles/buffered_open.dir/copytree.c.o -o buffered_open 

@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/buffered_open.c" "CMakeFiles/buffered_open.dir/buffered_open.c.o" "gcc" "CMakeFiles/buffered_open.dir/buffered_open.c.o.d"
-  "/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/copytree.c" "CMakeFiles/buffered_open.dir/copytree.c.o" "gcc" "CMakeFiles/buffered_open.dir/copytree.c.o.d"
+  "/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/copytree.c" "CMakeFiles/part4.dir/copytree.c.o" "gcc" "CMakeFiles/part4.dir/copytree.c.o.d"
+  "/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/part4.c" "CMakeFiles/part4.dir/part4.c.o" "gcc" "CMakeFiles/part4.dir/part4.c.o.d"
   )
 
 # Targets to which this target links.

@@ -117,41 +117,65 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named buffered_open
+# Target rules for targets named part4
 
 # Build rule for target.
-buffered_open: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 buffered_open
-.PHONY : buffered_open
+part4: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 part4
+.PHONY : part4
 
 # fast build rule for target.
-buffered_open/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/buffered_open.dir/build.make CMakeFiles/buffered_open.dir/build
-.PHONY : buffered_open/fast
+part4/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/part4.dir/build.make CMakeFiles/part4.dir/build
+.PHONY : part4/fast
 
-buffered_open.o: buffered_open.c.o
-.PHONY : buffered_open.o
+copytree.o: copytree.c.o
+.PHONY : copytree.o
 
 # target to build an object file
-buffered_open.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/buffered_open.dir/build.make CMakeFiles/buffered_open.dir/buffered_open.c.o
-.PHONY : buffered_open.c.o
+copytree.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/part4.dir/build.make CMakeFiles/part4.dir/copytree.c.o
+.PHONY : copytree.c.o
 
-buffered_open.i: buffered_open.c.i
-.PHONY : buffered_open.i
+copytree.i: copytree.c.i
+.PHONY : copytree.i
 
 # target to preprocess a source file
-buffered_open.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/buffered_open.dir/build.make CMakeFiles/buffered_open.dir/buffered_open.c.i
-.PHONY : buffered_open.c.i
+copytree.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/part4.dir/build.make CMakeFiles/part4.dir/copytree.c.i
+.PHONY : copytree.c.i
 
-buffered_open.s: buffered_open.c.s
-.PHONY : buffered_open.s
+copytree.s: copytree.c.s
+.PHONY : copytree.s
 
 # target to generate assembly for a file
-buffered_open.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/buffered_open.dir/build.make CMakeFiles/buffered_open.dir/buffered_open.c.s
-.PHONY : buffered_open.c.s
+copytree.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/part4.dir/build.make CMakeFiles/part4.dir/copytree.c.s
+.PHONY : copytree.c.s
+
+part4.o: part4.c.o
+.PHONY : part4.o
+
+# target to build an object file
+part4.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/part4.dir/build.make CMakeFiles/part4.dir/part4.c.o
+.PHONY : part4.c.o
+
+part4.i: part4.c.i
+.PHONY : part4.i
+
+# target to preprocess a source file
+part4.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/part4.dir/build.make CMakeFiles/part4.dir/part4.c.i
+.PHONY : part4.c.i
+
+part4.s: part4.c.s
+.PHONY : part4.s
+
+# target to generate assembly for a file
+part4.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/part4.dir/build.make CMakeFiles/part4.dir/part4.c.s
+.PHONY : part4.c.s
 
 # Help Target
 help:
@@ -161,10 +185,13 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... buffered_open"
-	@echo "... buffered_open.o"
-	@echo "... buffered_open.i"
-	@echo "... buffered_open.s"
+	@echo "... part4"
+	@echo "... copytree.o"
+	@echo "... copytree.i"
+	@echo "... copytree.s"
+	@echo "... part4.o"
+	@echo "... part4.i"
+	@echo "... part4.s"
 .PHONY : help
 
 

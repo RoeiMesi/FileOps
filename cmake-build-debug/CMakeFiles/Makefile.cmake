@@ -42,5 +42,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/buffered_open.dir/DependInfo.cmake"
+  "CMakeFiles/part4.dir/DependInfo.cmake"
   )

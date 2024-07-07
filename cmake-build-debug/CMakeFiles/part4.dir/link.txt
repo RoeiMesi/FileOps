@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/part4.dir/copytree.c.o CMakeFiles/part4.dir/part4.c.o -o part4 

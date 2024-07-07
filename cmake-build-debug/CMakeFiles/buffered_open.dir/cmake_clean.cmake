@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/buffered_open.dir/buffered_open.c.o"
   "CMakeFiles/buffered_open.dir/buffered_open.c.o.d"
+  "CMakeFiles/buffered_open.dir/copytree.c.o"
+  "CMakeFiles/buffered_open.dir/copytree.c.o.d"
   "buffered_open"
   "buffered_open.pdb"
 )

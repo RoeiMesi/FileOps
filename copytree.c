@@ -1,128 +1,145 @@
-// Name: Roei Mesilaty, ID: 315253336
 #include "copytree.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <dirent.h>
+#include <linux/limits.h>
 
-void create_path(const char *path) {
-    char buffer[256];
-    snprintf(buffer, sizeof(buffer), "%s", path);
-    for (char *p = buffer + 1; *p; p++) {
-        if (*p == '/') {
-            *p = 0;
-            mkdir(buffer, S_IRWXU);
-            *p = '/';
-        }
+// Function to manage the copying of symbolic links
+void copy_symlink(const char *src, const char *dst) {
+    char link_target[PATH_MAX];
+    ssize_t target_length = readlink(src, link_target, sizeof(link_target) - 1);
+    if (target_length == -1) {
+        perror("readlink");
+        return;
     }
-    mkdir(buffer, S_IRWXU);
+    link_target[target_length] = '\0';
+    if (symlink(link_target, dst) == -1) {
+        perror("symlink");
+    }
 }
 
-void copy_file_content(const char *src, const char *dest) {
-    char buffer[BUFSIZ];
-    ssize_t bytes_read;
-    int src_fd = open(src, O_RDONLY);
-    if (src_fd == -1) {
-        perror("open failed");
+// Function to handle regular file copying
+void copy_file(const char *src, const char *dest, int copy_symlinks, int copy_permissions) {
+    int source_fd = open(src, O_RDONLY);
+    if (source_fd == -1) {
+        perror("open source");
         return;
     }
-    int dest_fd = open(dest, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+
+    struct stat file_info;
+    if (fstat(source_fd, &file_info) == -1) {
+        perror("fstat");
+        close(source_fd);
+        return;
+    }
+
+    int dest_fd = open(dest, O_WRONLY | O_CREAT | O_TRUNC, file_info.st_mode);
     if (dest_fd == -1) {
-        perror("open failed");
-        close(src_fd);
+        perror("open destination");
+        close(source_fd);
         return;
     }
-    while ((bytes_read = read(src_fd, buffer, sizeof(buffer))) > 0) {
-        if (write(dest_fd, buffer, bytes_read) != bytes_read) {
-            perror("write failed");
-            close(src_fd);
+
+    char buffer[BUFSIZ];
+    ssize_t bytes_transferred;
+    while ((bytes_transferred = read(source_fd, buffer, sizeof(buffer))) > 0) {
+        if (write(dest_fd, buffer, bytes_transferred) != bytes_transferred) {
+            perror("write");
+            close(source_fd);
             close(dest_fd);
             return;
         }
     }
-    if (bytes_read == -1) {
-        perror("read failed");
+    if (bytes_transferred == -1) {
+        perror("read");
     }
-    close(src_fd);
+
+    close(source_fd);
     close(dest_fd);
-}
-
-void copy_file(const char *src, const char *dest, int copy_symlinks, int copy_permissions) {
-    struct stat file_stat;
-    if (lstat(src, &file_stat) == -1) {
-        perror("lstat failed");
-        return;
-    }
-
-    if (S_ISLNK(file_stat.st_mode)) {
-        if (copy_symlinks) {
-            char link_target[256];
-            ssize_t len = readlink(src, link_target, sizeof(link_target) - 1);
-            if (len == -1) {
-                perror("readlink failed");
-                return;
-            }
-            link_target[len] = '\0';
-            if (symlink(link_target, dest) == -1) {
-                perror("symlink failed");
-            }
-        } else {
-            copy_file_content(src, dest);
-            if (copy_permissions) {
-                if (chmod(dest, file_stat.st_mode) == -1) {
-                    perror("chmod failed");
-                }
-            }
-        }
-    } else {
-        copy_file_content(src, dest);
-        if (copy_permissions) {
-            if (chmod(dest, file_stat.st_mode) == -1) {
-                perror("chmod failed");
-            }
-        }
-    }
-}
-
-void copy_directory(const char *src, const char *dest, int copy_symlinks, int copy_permissions) {
-    struct stat dir_stat;
-    if (stat(src, &dir_stat) == -1) {
-        perror("stat failed");
-        return;
-    }
-
-    create_path(dest);
 
     if (copy_permissions) {
-        if (chmod(dest, dir_stat.st_mode) == -1) {
-            perror("chmod failed");
+        if (chmod(dest, file_info.st_mode) == -1) {
+            perror("chmod");
         }
     }
+}
 
-    DIR *dir = opendir(src);
-    if (!dir) {
-        perror("opendir failed");
+void transfer_file(const char *src, const char *dest, int copy_symlinks, int copy_permissions) {
+    struct stat file_info;
+    if (lstat(src, &file_info) == -1) {
+        perror("lstat");
         return;
     }
 
-    struct dirent *entry;
-    while ((entry = readdir(dir)) != NULL) {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+    if (S_ISLNK(file_info.st_mode) && copy_symlinks) {
+        copy_symlink(src, dest);
+    } else if (S_ISREG(file_info.st_mode)) {
+        copy_file(src, dest, copy_symlinks, copy_permissions);
+    }
+}
+
+void create_directories_recursive(const char *path) {
+    char temp_path[PATH_MAX];
+    char *sub_path = NULL;
+    size_t length;
+
+    snprintf(temp_path, sizeof(temp_path), "%s", path);
+    length = strlen(temp_path);
+    if (temp_path[length - 1] == '/') {
+        temp_path[length - 1] = '\0';
+    }
+    for (sub_path = temp_path + 1; *sub_path; sub_path++) {
+        if (*sub_path == '/') {
+            *sub_path = '\0';
+            mkdir(temp_path, S_IRWXU);
+            *sub_path = '/';
+        }
+    }
+    mkdir(temp_path, S_IRWXU);
+}
+
+// Function to handle directory content copying
+void process_directory_contents(const char *src, const char *dest, int copy_symlinks, int copy_permissions) {
+    DIR *source_dir = opendir(src);
+    if (!source_dir) {
+        perror("opendir");
+        return;
+    }
+
+    create_directories_recursive(dest);
+
+    struct dirent *dir_entry;
+    while ((dir_entry = readdir(source_dir)) != NULL) {
+        if (strcmp(dir_entry->d_name, ".") == 0 || strcmp(dir_entry->d_name, "..") == 0) {
             continue;
         }
 
-        char src_path[1024];
-        char dest_path[1024];
-        snprintf(src_path, sizeof(src_path), "%s/%s", src, entry->d_name);
-        snprintf(dest_path, sizeof(dest_path), "%s/%s", dest, entry->d_name);
+        char src_entry_path[PATH_MAX];
+        char dest_entry_path[PATH_MAX];
+        snprintf(src_entry_path, sizeof(src_entry_path), "%s/%s", src, dir_entry->d_name);
+        snprintf(dest_entry_path, sizeof(dest_entry_path), "%s/%s", dest, dir_entry->d_name);
 
-        if (entry->d_type == DT_DIR) {
-            copy_directory(src_path, dest_path, copy_symlinks, copy_permissions);
+        struct stat entry_info;
+        if (lstat(src_entry_path, &entry_info) == -1) {
+            perror("lstat");
+            continue;
+        }
+
+        if (S_ISDIR(entry_info.st_mode)) {
+            copy_directory(src_entry_path, dest_entry_path, copy_symlinks, copy_permissions);
         } else {
-            copy_file(src_path, dest_path, copy_symlinks, copy_permissions);
+            transfer_file(src_entry_path, dest_entry_path, copy_symlinks, copy_permissions);
         }
     }
-    closedir(dir);
+    closedir(source_dir);
+}
+
+void copy_directory(const char *src, const char *dest, int copy_symlinks, int copy_permissions) {
+    process_directory_contents(src, dest, copy_symlinks, copy_permissions);
 }

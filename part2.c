@@ -17,7 +17,8 @@ void write_message(const char *message, int count) {
 void getLockAccess(const char* lockfile) {
     int fd;
     while ((fd = open(lockfile, O_CREAT | O_EXCL, 0444)) == -1) {
-        // If we get error that the file exists, it means that some other child currently has the lock, hence we need to wait until it's free.
+        // If we get error that the file exists, it means that some other child currently has the lock,
+        // hence we need to wait until it's free.
         if (errno != EEXIST) {
             perror("Error acquiring lock");
             exit(1);
@@ -34,7 +35,7 @@ void freeLock(const char* lockfile) {
 }
 
 void main(int argc, char* argv[]) {
-    if (argc < 5) {
+    if (argc < 4) {
         fprintf(stderr, "Usage: %s <message1> <message2> ... <order> <count>", argv[0]);
         return;
     }

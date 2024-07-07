@@ -17,8 +17,8 @@
 					<DistClean command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="buffered_open">
-				<Option output="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/buffered_open" prefix_auto="0" extension_auto="0"/>
+			<Target title="part4">
+				<Option output="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/part4" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -33,14 +33,14 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 buffered_open"/>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 part4"/>
 					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="buffered_open/fast">
-				<Option output="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/buffered_open" prefix_auto="0" extension_auto="0"/>
+			<Target title="part4/fast">
+				<Option output="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/part4" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -55,7 +55,7 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 buffered_open/fast"/>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 part4/fast"/>
 					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/gmake -j12 -f &quot;/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -82,11 +82,14 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/buffered_open.c">
-			<Option target="buffered_open"/>
+		<Unit filename="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/copytree.c">
+			<Option target="part4"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/buffered_open.h">
-			<Option target="buffered_open"/>
+		<Unit filename="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/copytree.h">
+			<Option target="part4"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/part4.c">
+			<Option target="part4"/>
 		</Unit>
 		<Unit filename="/mnt/c/Users/RoeiM/OneDrive/Desktop/Linux/Operating_Systems/ex_2/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
