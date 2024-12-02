@@ -1,4 +1,3 @@
-// Name: Roei Mesilaty, ID: 315253336
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
