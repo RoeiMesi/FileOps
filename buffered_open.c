@@ -1,4 +1,3 @@
-// Name: Roei Mesilaty, ID: 315253336
 #include "buffered_open.h"
 #include <stdio.h>
 #include <stdlib.h>
